@@ -12,10 +12,21 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Marca Pontos',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xff966912)),
+        textTheme: const TextTheme(
+          bodyMedium: TextStyle(
+            color: Color.fromARGB(255, 85, 84, 84),
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+          bodyLarge: TextStyle(
+              color: Colors.white, fontSize: 36, fontWeight: FontWeight.bold),
+        ),
+        scaffoldBackgroundColor: const Color.fromARGB(255, 224, 205, 166),
+        colorScheme:
+            ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 0, 0, 0)),
         useMaterial3: true,
       ),
       home: const MyHomePage(title: 'Marca Pontos'),
@@ -33,7 +44,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final List<User> _jogadores = <User>[User('teste')];
+  final List<User> _jogadores = <User>[];
   int _pontuacao = 0;
   List<int> intervals = <int>[
     -100,
@@ -84,9 +95,14 @@ class _MyHomePageState extends State<MyHomePage> {
           return AlertDialog(
             scrollable: true,
             title: const Text("Nome"),
-            content: TextField(onChanged: (value) {
-              texto = value;
-            }),
+            content: TextField(
+              onChanged: (value) {
+                texto = value;
+              },
+              style: const TextStyle(
+                color: Colors.black,
+              ),
+            ),
             actions: [
               ElevatedButton(
                   onPressed: () {
@@ -145,69 +161,96 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: Text(widget.title),
-          actions: [
-            IconButton(
-                onPressed: _newUserPopUp,
-                tooltip: "Novo Jogador",
-                icon: const Icon(Icons.person_add_alt)),
-            IconButton(
-                onPressed: _resetaPontos,
-                tooltip: "Resetar Pontos",
-                icon: const Icon(Icons.hourglass_empty_outlined)),
-          ],
-        ),
-        body: Column(
-          children: [
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  ...intervals.map((valor) {
-                    return TextButton(
+    final ThemeData theme = Theme.of(context);
+    return Container(
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: <Color>[
+              Color.fromARGB(172, 79, 143, 192),
+              Color.fromARGB(171, 83, 211, 220),
+            ]),
+      ),
+      child: Scaffold(
+          appBar: AppBar(
+            backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+            title: Text(widget.title),
+            flexibleSpace: Container(
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: <Color>[
+                      Color(0xff4f8fc0),
+                      Color(0xff53d2dc),
+                    ]),
+              ),
+            ),
+            actions: [
+              IconButton(
+                  onPressed: _newUserPopUp,
+                  tooltip: "Novo Jogador",
+                  icon: const Icon(Icons.person_add_alt)),
+              IconButton(
+                  onPressed: _resetaPontos,
+                  tooltip: "Resetar Pontos",
+                  icon: const Icon(Icons.refresh_outlined)),
+            ],
+          ),
+          body: Column(
+            children: [
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    ...intervals.map((valor) {
+                      return TextButton(
                         onPressed: () {
                           setState(() {
                             _pontuacao += valor;
                             _atualizaPonto();
                           });
                         },
-                        child: Text(valor < 0 ? '$valor' : '+$valor'));
-                  }).toList()
-                ],
+                        child: Text(
+                          valor < 0 ? '$valor' : '+$valor',
+                          style: theme.textTheme.bodyMedium,
+                        ),
+                      );
+                    }).toList()
+                  ],
+                ),
               ),
-            ),
-            TextButton(
-              onPressed: _editNumberPopUp,
-              child: Text(
-                '$_pontuacao',
-                style: const TextStyle(fontSize: 28),
+              TextButton(
+                onPressed: _editNumberPopUp,
+                child: Text(
+                  '$_pontuacao',
+                  style: theme.textTheme.bodyLarge,
+                ),
               ),
-            ),
-            Expanded(
-              child: ListView.builder(
-                  padding: const EdgeInsets.all(8),
-                  itemCount: _jogadores.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    final item = _jogadores[index];
-                    return Dismissible(
-                      key: Key(item.name),
-                      onDismissed: (direction) {
-                        setState(() {
-                          _jogadores.removeAt(index);
-                        });
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('${item.name} removido.')));
-                      },
-                      child: item,
-                    );
-                  }),
-            ),
-          ],
-        ));
+              Expanded(
+                child: ListView.builder(
+                    padding: const EdgeInsets.all(8),
+                    itemCount: _jogadores.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      final item = _jogadores[index];
+                      return Dismissible(
+                        key: Key(item.name),
+                        onDismissed: (direction) {
+                          setState(() {
+                            _jogadores.removeAt(index);
+                          });
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text('${item.name} removido.')));
+                        },
+                        child: item,
+                      );
+                    }),
+              ),
+            ],
+          )),
+    );
   }
 }
 /*

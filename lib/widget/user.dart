@@ -14,12 +14,6 @@ class User extends StatefulWidget {
 }
 
 class _UserState extends State<User> {
-  final titleStyle = const TextStyle(
-      color: Colors.black, fontSize: 30, fontWeight: FontWeight.bold);
-
-  final pointStyle = const TextStyle(
-      color: Color(0xff744a0f), fontSize: 24, fontWeight: FontWeight.bold);
-
   void _adicionar() {
     setState(() {
       widget.pontos += widget.ponto;
@@ -63,13 +57,19 @@ class _UserState extends State<User> {
   Widget build(BuildContext context) {
     return Card(
       margin: const EdgeInsets.all(10),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
       elevation: 4.0,
       child: Container(
         decoration: const BoxDecoration(
-            gradient: LinearGradient(colors: [
-          Color(0xffd1a300),
-          Color(0xffffec0d),
-        ], begin: Alignment.topLeft, end: Alignment.bottomRight)),
+          borderRadius: BorderRadius.all(Radius.circular(15.0)),
+          gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: <Color>[
+                Color(0xff4f8fc0),
+                Color(0xff53d2dc),
+              ]),
+        ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -79,7 +79,11 @@ class _UserState extends State<User> {
                 padding: const EdgeInsets.all(12.0),
                 child: Text(
                   widget.name,
-                  style: titleStyle,
+                  style: const TextStyle(
+                    color: Colors.black87,
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),
@@ -104,7 +108,11 @@ class _UserState extends State<User> {
                   Text(
                     key: widget.key,
                     '${widget.pontos}',
-                    style: pointStyle,
+                    style: const TextStyle(
+                      color: Color.fromARGB(255, 6, 40, 189),
+                      fontSize: 30,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ],
               ),
