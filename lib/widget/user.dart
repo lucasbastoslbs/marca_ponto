@@ -18,22 +18,45 @@ class _UserState extends State<User> {
       color: Colors.black, fontSize: 30, fontWeight: FontWeight.bold);
 
   final pointStyle = const TextStyle(
-      color: Color.fromARGB(255, 253, 1, 1),
-      fontSize: 24,
-      fontWeight: FontWeight.bold);
+      color: Color(0xff744a0f), fontSize: 24, fontWeight: FontWeight.bold);
 
-  void adicionar() {
+  void _adicionar() {
     setState(() {
       widget.pontos += widget.ponto;
     });
     widget.historico.add('${widget.ponto}');
   }
 
-  void subtrair() {
+  void _subtrair() {
     setState(() {
       widget.pontos -= widget.ponto;
     });
     widget.historico.add("-${widget.ponto}");
+  }
+
+  void _mostrarHistorico() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            scrollable: true,
+            title: const Text("Histórico"),
+            content: Column(
+              children: [
+                ...widget.historico.map((e) {
+                  return Text(e);
+                }).toList(),
+              ],
+            ),
+            actions: [
+              ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text("Fechar")),
+            ],
+          );
+        });
   }
 
   @override
@@ -41,73 +64,53 @@ class _UserState extends State<User> {
     return Card(
       margin: const EdgeInsets.all(10),
       elevation: 4.0,
-      shadowColor: Colors.grey,
-      color: Colors.cyan,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Flexible(
-            flex: 6,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                widget.name,
-                style: titleStyle,
+      child: Container(
+        decoration: const BoxDecoration(
+            gradient: LinearGradient(colors: [
+          Color(0xffd1a300),
+          Color(0xffffec0d),
+        ], begin: Alignment.topLeft, end: Alignment.bottomRight)),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              flex: 6,
+              child: Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Text(
+                  widget.name,
+                  style: titleStyle,
+                ),
               ),
             ),
-          ),
-          Flexible(
-            flex: 3,
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    IconButton(
-                        onPressed: adicionar, icon: const Icon(Icons.add)),
-                    IconButton(
-                        onPressed: subtrair,
-                        icon: const Icon(Icons.airplane_ticket)),
-                  ],
-                ),
-                Text(
-                  key: widget.key,
-                  '${widget.pontos}',
-                  style: pointStyle,
-                ),
-              ],
+            Expanded(
+              flex: 4,
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      IconButton(
+                          onPressed: _adicionar,
+                          icon: const Icon(Icons.add_circle_rounded)),
+                      IconButton(
+                          onPressed: _mostrarHistorico,
+                          icon: const Icon(Icons.history_rounded)),
+                      IconButton(
+                          onPressed: _subtrair,
+                          icon: const Icon(Icons.do_not_disturb_on_rounded)),
+                    ],
+                  ),
+                  Text(
+                    key: widget.key,
+                    '${widget.pontos}',
+                    style: pointStyle,
+                  ),
+                ],
+              ),
             ),
-          ),
-          Flexible(
-            flex: 1,
-            child: IconButton(
-                onPressed: () {
-                  showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          scrollable: true,
-                          title: const Text("Histórico"),
-                          content: Column(
-                            children: [
-                              ...widget.historico.map((e) {
-                                return Text(e);
-                              }).toList(),
-                            ],
-                          ),
-                          actions: [
-                            ElevatedButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                                child: const Text("Fechar")),
-                          ],
-                        );
-                      });
-                },
-                icon: const Icon(Icons.edit)),
-          )
-        ],
+          ],
+        ),
       ),
     );
   }
